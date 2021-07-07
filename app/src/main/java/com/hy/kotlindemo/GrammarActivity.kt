@@ -2,6 +2,8 @@ package com.hy.kotlindemo
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.CompoundButton
 import java.util.*
 
 /**
@@ -325,6 +327,124 @@ class GrammarActivity : AppCompatActivity() {
             println("rangTo.reversed i:$i") // 3 2 1
         }
 
+        /**
+         * ==========修饰符==========
+         */
+        // final 和 open
+        // kotlin 中的类和方法默认都是 final 的，即不可继承的，如果想允许创建一个类的子类，需要使用 open 修饰符来标识这个类
+        // 此外，也需要为每一个希望被重写的属性和方法添加 open 修饰符
+        val button = Button()
+        button.click()
+        button.longClick()
+
+        // 如果重写了一个基类或者接口的成员，重写了的成员同样默认是 open 的。例如，如果 Button 类是 open 的，则其子类也可以重写其 click() 方法
+        val button2 = CompatButton()
+        button2.click()
+
+        // public
+        // public 修饰符是限制级最低的修饰符，是默认的修饰符。如果一个定义为 public 的成员被包含在一个 private 修饰的类中，那么这个成员在这个类以外也是不可见的
+
+        // protected
+        // protected 修饰符只能被用在类或者接口中的成员上。在 Java 中，可以从同一个包中访问一个 protected 的成员
+        // 但对于 kotlin 来说，protected 成员只在该类和它的子类中可见。此外，protected 不适用于顶层声明
+
+        // internal
+        // 一个定义为 internal 的包成员，对其所在的整个 module 可见，但对于其它 module 而言就是不可见的了
+        // 例如，假设我们想要发布一个开源库，库中包含某个类，我们希望这个类对于库本身是全局可见的，但对于外部使用者来说它不能被引用到，此时就可以选择将其声明为 internal 的来实现这个目的
+
+        // private
+        // private 修饰符是限制级最高的修饰符，kotlin 允许在顶层声明中使用 private 可见性，包括类、函数和属性，这表示只在自己所在的文件中可见。
+        // 所以如果将一个类声明为 private，就不能在定义这个类之外的地方中使用它。
+        // 此外，如果在一个类里面使用了 private 修饰符，那访问权限就被限制在这个类里面，继承这个类的子类也不能使用它。
+        // 所以如果类、对象、接口等被定义为 private，那么它们只对被定义所在的文件可见。如果被定义在了类或者接口中，那它们只对这个类或者接口可见。
+
+        // 修饰符	         类成员	        顶层声明
+        // public（默认）	 所有地方可见	    所有地方可见
+        // internal	         模块中可见	    模块中可见
+        // protected	     子类中可见
+        // private	         类中可见	    文件中可见
+
+        /**
+         * ==========空安全==========
+         */
+        // 可空性
+        // 在 kotlin 中，类型系统将一个引用分为可以容纳 null （可空引用）或者不能容纳 null（非空引用）两种类型。 例如，String 类型的常规变量不能指向 null
+        var name: String = "leavesC"
+        //编译错误
+        //name = null
+
+        // 如果希望一个变量可以储存 null 引用，需要显式地在类型名称后面加上问号
+        var name2: String? = "leavesC"
+        name2 = null
+
+        // 问号可以加在任何类型的后面来表示这个类型的变量可以存储 null 引用：Int?、Double? 、Long? 等
+        // kotlin 对可空类型的显式支持有助于防止 NullPointerException 导致的异常问题，编译器不允许不对可空变量做 null 检查就直接调用其属性。
+        // 这个强制规定使得开发者必须在编码初期就考虑好变量的可赋值范围并为其各个情况做好分支处理
+        checkNull(null)
+        checkNull2(null)
+
+        // 安全调用运算符：?.
+        // 安全调用运算符：?. 允许把一次 null 检查和一次方法调用合并为一个操作，如果变量值非空，则方法或属性会被调用，否则直接返回 null
+        checkNullSafe("Hello Null")
+        checkNullSafe2(null)
+
+        // Elvis 运算符：?:
+        // Elvis 运算符：?: 用于替代 ?. 直接返回默认值 null 的情况
+        // Elvis 运算符接收两个运算数，如果第一个运算数不为 null ，运算结果就是其运算结果值，如果第一个运算数为 null ，运算结果就是第二个运算数
+        checkNullElvis("Elvis")
+        checkNullElvis2(null)
+
+        // 安全转换运算符：as?
+        // 安全转换运算符：as? 用于把值转换为指定的类型，如果值不适合该类型则返回 null
+        checkSafeAs("999")
+
+        // 非空断言：!!
+        // 非空断言用于把任何值转换为非空类型，如果对 null 值做非空断言，则会抛出异常
+        var cc: String? = "leavesC"
+        checkNotNull(cc) //7
+        cc = null
+        checkNotNull(cc) //kotlinNullPointerException
+
+        // 可空类型的扩展
+        // 为可空类型定义扩展函数是一种更强大的处理 null 值的方式，可以允许接收者为 null 的调用，并在该函数中处理 null ，而不是在确保变量不为 null 之后再调用它的方法
+        // 例如，如下方法可以被正常调用而不会发生空指针异常
+        val canNull: String? = null
+        canNull.isNullOrEmpty() //true
+        // isNullOrEmpty() 的方法签名如下所示，可以看到这是为可空类型 CharSequence? 定义的扩展函数，方法中已经处理了方法调用者为 null 的情况
+
+        /**
+         * ==========类型的检查与转换==========
+         */
+        // 类型检查
+        // is 与 !is 操作符用于在运行时检查对象是否符合给定类型
+        val intValueIs = 100
+        println("类型检查 int:" + (intValueIs is Int))
+        val strValueIs = "类型检查 is"
+        println("类型检查 str:" + (strValueIs is String))
+        // 同时，is 操作符也附带了一个智能转换功能。在许多情况下，不需要在 kotlin 中使用显式转换操作符，因为编译器跟踪不可变值的 is 检查以及显式转换，并在需要时自动插入安全的转换
+        // 例如，在上面的例子中，当判断 value 为 String 类型通过时，就可以直接将 value 当做 String 类型变量并调用其内部属性，这个过程就叫做智能转换
+        // 编译器会指定根据上下文环境，将变量智能转换为合适的类型
+
+        // || 右侧的 value 被自动隐式转换为字符串，所以可以直接访问其 length 属性
+        if (strValueIs !is String || strValueIs.length > 0) {
+
+        }
+        // && 右侧的 value 被自动隐式转换为字符串，所以可以直接访问其 length 属性
+        if (strValueIs is String && strValueIs.length > 0) {
+
+        }
+
+        // 不安全的转换操作符
+        // 如果转换是不可能的，转换操作符 as 会抛出一个异常。因此，我们称之为不安全的转换操作符
+        parserType("leavesC") //value is String , length is 7
+        parserType(10) //会抛出异常 ClassCastException
+
+        // 安全的转换操作符
+        // 可以使用安全转换操作符 as? 来避免在转换时抛出异常，它在失败时返回 null
+        val xxx = null
+        val yyy: String? = xxx as? String
+
+
     }
 
     /**
@@ -565,4 +685,102 @@ class GrammarActivity : AppCompatActivity() {
         //funReturn5:value is 5
         //funReturn5:function end
     }
+
+    open class View {
+        open fun click() {
+
+        }
+
+        // 不能在子类中被重写
+        fun longClick() {
+
+        }
+    }
+
+    open class Button : View() {
+        override fun click() {
+            super.click()
+        }
+    }
+
+    class CompatButton : Button() {
+        override fun click() {
+            super.click()
+        }
+    }
+
+    /**
+     * 编译器不允许不对 name 做 null 检查就直接调用其属性
+     */
+    private fun checkNull(name: String?): Boolean {
+        //error，编译器不允许不对 name 做 null 检查就直接调用其属性
+        //return name.isNotEmpty()
+        return true
+    }
+
+    /**
+     * 显式地进行 null 检查
+     */
+    private fun checkNull2(name: String?): Boolean {
+        if (name != null) {
+            return name.isNotEmpty()
+        }
+        return false
+    }
+
+    private fun checkNullSafe(name: String?) {
+        if (name != null) {
+            println("checkNullSafe:" + name.toUpperCase())
+        } else {
+            println("checkNullSafe:" + null)
+        }
+    }
+
+    /**
+     * 等同 checkNullSafe()
+     */
+    private fun checkNullSafe2(name: String?) {
+        println("checkNullSafe2:" + name?.toUpperCase())
+    }
+
+
+    private fun checkNullElvis(name: String?) {
+        if (name != null) {
+            println("checkNullElvis:$name")
+        } else {
+            println("checkNullElvis:default")
+        }
+    }
+
+    /**
+     * 等同 checkNullElvis()
+     */
+    private fun checkNullElvis2(name: String?) {
+        println("checkNullElvis2:" + (name ?: "default"))
+    }
+
+    /**
+     * 安全转换运算符：as? 用于把值转换为指定的类型，如果值不适合该类型则返回 null
+     */
+    private fun checkSafeAs(any: Any?) {
+        val result = any as? String
+        //println(result ?: println("checkSafeAs: is not String"))
+    }
+
+    /**
+     * 非空断言：!!
+     * 非空断言用于把任何值转换为非空类型，如果对 null 值做非空断言，则会抛出异常
+     */
+    private fun checkNotNull(name: String?) {
+        //println(name!!.length)
+    }
+
+    /**
+     * 如果转换是不可能的，转换操作符 as 会抛出一个异常。因此，我们称之为不安全的转换操作符
+     */
+    private fun parserType(value: Any) {
+        val tempValue = value as String
+        println("parserType:value is String , length is ${tempValue.length}")
+    }
+
 }
