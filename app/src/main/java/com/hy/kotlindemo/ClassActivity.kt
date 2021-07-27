@@ -188,10 +188,10 @@ class ClassActivity : AppCompatActivity() {
         // 然而这种方式由于额外的堆内存分配问题，就引入了运行时的性能开销，新的包装类相对原生类型所需要的性能消耗要大得多，可是此时又需要考虑程序的健壮性和可读性，所以包装类也是需要的
 
         // 内联类（InlineClass）就是为了解决这两者的矛盾而诞生的。上述代码可以改为以下方式来实现
-        fun sendEmail2(delay: Time2) {
-            println(delay.second)
-        }
-        sendEmail2(Minute2(10).toTime())
+        //fun sendEmail2(delay: Time2) {
+        //    println(delay.second)
+        //}
+        //sendEmail2(Minute2(10).toTime())
         // 使用 inline 修饰的类就称为内联类，内联类必须含有唯一的一个属性在主构造函数中初始化，在运行时将使用这个唯一属性来表示内联类的实例，从而避免了包装类在运行时的额外开销
 
         /**
@@ -462,15 +462,15 @@ class ClassActivity : AppCompatActivity() {
 
     }
 
-    inline class Time2(val second: Long)
-
-    inline class Minute2(private val count: Int) {
-
-        fun toTime(): Time2 {
-            return Time2(count * 60L)
-        }
-
-    }
+    //inline class Time2(val second: Long)
+    //
+    //inline class Minute2(private val count: Int) {
+    //
+    //    fun toTime(): Time2 {
+    //        return Time2(count * 60L)
+    //    }
+    //
+    //}
 
     interface Clickable {
         fun click()

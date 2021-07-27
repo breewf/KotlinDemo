@@ -779,8 +779,8 @@ class GrammarActivity : AppCompatActivity() {
      * 如果转换是不可能的，转换操作符 as 会抛出一个异常。因此，我们称之为不安全的转换操作符
      */
     private fun parserType(value: Any) {
-        val tempValue = value as String
-        println("parserType:value is String , length is ${tempValue.length}")
+        //val tempValue = value as String
+        //println("parserType:value is String , length is ${tempValue.length}")
     }
 
 }
