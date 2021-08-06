@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val intent = Intent(this, GrammarActivity::class.java)
+        val intent = Intent(this, ActivityResultContractActivity::class.java)
         startActivity(intent)
     }
 }
